@@ -65,42 +65,13 @@ app.get('/webhook', function (req, res) {
 });
 
 // The main message handler
-app.post('/webhook', function(req, res){
-  // Parsing the Messenger API response
-  const messaging = FB.getFirstMessagingEntry(req.body);
-  if (messaging && messaging.message) {
-
-    // Yay! We got a new message!
-
-    // We retrieve the Facebook user ID of the sender
-    const sender = messaging.sender.id;
-
-    // We retrieve the user's current session, or create one if it doesn't exist
-    // This is needed for our bot to figure out the conversation history
-    const sessionId = findOrCreateSession(sender);
-
-    // We retrieve the message content
-    const msg = messaging.message.text;
-    const atts = messaging.message.attachments;
-
-    if (atts) {
-      // We received an attachment
-
-      // Let's reply with an automatic message
-      FB.fbMessage(
-        sender,
-        'Sorry I can only process text messages for now.'
-      );
-    } else if (msg) {
-      // We received a text message
-
-      // Let's forward the message to the Wit.ai Bot Engine
-      // This will run all actions until our bot has nothing left to do
-      FB.fbMessage(
-	  sender, 
-	  'Je n\'ai pas d\'autres réponses pour le moment'
-	  );
+app.post('/webhook', function (req, res) {
+    var events = req.body.entry[0].messaging;
+    for (i = 0; i < events.length; i++) {
+        var event = events[i];
+        if (event.message && event.message.text) {
+            sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+        }
     }
-  }
-  res.sendStatus(200);
+    res.sendStatus(200);
 });
