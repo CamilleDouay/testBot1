@@ -6,8 +6,8 @@ var app = express();
 
 // Get config 
 
-const Config = require(./config.js);
-const 
+const Config = require('./config.js');
+
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
