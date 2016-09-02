@@ -36,7 +36,7 @@ const actions = {
       // Let's forward our bot response to her.
       FB.sendMessage(
 		recipientId, 
-		message
+		'Le temps est sunny à Rouen'
 		);
 
         // Let's give the wheel back to our bot
