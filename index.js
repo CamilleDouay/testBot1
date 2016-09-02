@@ -70,7 +70,7 @@ app.post('/webhook', function (req, res) {
     for (i = 0; i < events.length; i++) {
         var event = events[i];
         if (event.message && event.message.text) {
-			const sender = envent.sender.id; 
+			const sender = event.sender.id; 
 			console.log(sender);
 			
 			const msg = event.message.text;
