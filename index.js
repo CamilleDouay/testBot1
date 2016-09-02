@@ -92,7 +92,7 @@ app.post('/webhook', function (req, res) {
 				wit.runActions(
 					sessionId,
 					msg,
-					sessions[sessionID].context,
+					sessions[sessionId].context,
 					(error, context) =>{
 						if (error) {
 							console.log('Error from Wit : ', error);
