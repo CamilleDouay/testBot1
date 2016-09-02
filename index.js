@@ -3,6 +3,12 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
 
+
+// Get config 
+
+const Config = require(./config.js);
+const 
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen((process.env.PORT || 3000));
@@ -12,13 +18,16 @@ app.get('/', function (req, res) {
     res.send('This is TestBot Server');
 });
 
-// Facebook Webhook
+
 app.get('/webhook', function (req, res) {
-    if (req.query['hub.verify_token'] === 'testbot_verify_token') {
-        res.send(req.query['hub.challenge']);
-    } else {
-        res.send('Invalid verify token');
-    }
+	if(!Config.FB_VERIFY_TOKEN){
+		throw new Error('missing FB_VERIFY_TOKEN')
+	}
+	if (req.query['hub.verify_token'] == config.FB_VERIFY_TOKEN){
+		res.send(req.query['hub.challenge']);
+	} else {
+		res.sendStatus(400)
+	}
 });
 
 // handler receiving messages
@@ -41,7 +50,7 @@ app.post('/webhook', function (req, res) {
 function sendMessage(recipientId, message) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
+        qs: {access_token: Config.FB_PAGE_TOKEN},
         method: 'POST',
         json: {
             recipient: {id: recipientId},
