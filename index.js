@@ -88,6 +88,10 @@ app.post('/webhook', function (req, res) {
 				'Sorry, I can only porcesse text messages for now'
 				);
 			} else if (msg) {
+				FB.sendMessage(
+				sender, 
+				'Traitement en cours'
+				);
 				
 				wit.runActions(
 					sessionId,

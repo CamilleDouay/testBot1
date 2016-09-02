@@ -39,7 +39,7 @@ const fbMessage = (recipientId, msg, cb) => {
 
 function sendMessage(recipientId, message) {
     request({
-        url: 'https://graph.facebook.com/v2.7/me/messages',
+        url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: Config.FB_ACCESS_TOKEN},
         method: 'POST',
         json: {
