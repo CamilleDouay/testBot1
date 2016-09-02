@@ -9,13 +9,13 @@ if(!WIT_TOKEN) {
 
 // Messenger API parameters
 
-cont FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN;
+const FB_PAGE_TOKEN = process.env.FB_PAGE_TOKEN;
 
 var FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN || 'verify_token';
 
 module.exports = {
-	WIT_TOKEN: WIT_TOKEN;
-	FB_PAGE_TOKEN: FB_PAGE_TOKEN;
-	FB_VERIFY_TOKEN: FB_VERIFY_TOKEN;
+	WIT_TOKEN: WIT_TOKEN,
+	FB_PAGE_TOKEN: FB_PAGE_TOKEN,
+	FB_VERIFY_TOKEN: FB_VERIFY_TOKEN,
 };
 
