@@ -76,6 +76,9 @@ app.post('/webhook', function (req, res) {
 			const sender = event.sender.id; 
 			console.log(sender);
 			
+			//Création de l'identifiant de session 
+			const sessionId = findOrCreateSession(sender);
+
 			const msg = event.message.text;
 			const atts = event.message.attachements;
 			
@@ -85,9 +88,22 @@ app.post('/webhook', function (req, res) {
 				'Sorry, I can only porcesse text messages for now'
 				);
 			} else if (msg) {
-				FB.sendMessage(sender, {text: "Echo: " + event.message.text});
+				
+				wit.runActions(
+					sessionId,
+					msg,
+					sessions[sessionID].context,
+					(error, context) =>{
+						if (error) {
+							console.log('Error from Wit : ', error);
+						} else {
+							console.log('waiting for further messages');
+						
+							sessions[sessionId].context = context;
+						}
+					}
+				);
 			}
-			
         }
     }
     res.sendStatus(200);
