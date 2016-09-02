@@ -34,19 +34,13 @@ const actions = {
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
-      FB.sendMessage(recipientId, message, (err, data) => {
-        if (err) {
-          console.log(
-            'Oops! An error occurred while forwarding the response to',
-            recipientId,
-            ':',
-            err
-          );
-        }
+      FB.sendMessage(
+		recipientId, 
+		message
+		);
 
         // Let's give the wheel back to our bot
         cb();
-      });
     } else {
       console.log('Oops! Couldn\'t find user in context:', context);
       // Giving the wheel back to our bot
