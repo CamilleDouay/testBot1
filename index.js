@@ -70,7 +70,21 @@ app.post('/webhook', function (req, res) {
     for (i = 0; i < events.length; i++) {
         var event = events[i];
         if (event.message && event.message.text) {
-            FB.sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+			const sender = envent.sender.id; 
+			console.log(sender);
+			
+			const msg = event.message.text;
+			const atts = event.message.attachements;
+			
+			if(atts){
+				FB.sendMessage(
+				sender, 
+				'Sorry, I can only porcesse text messages for now'
+				);
+			} else if (msg) {
+				FB.sendMessage(sender, {text: "Echo: " + event.message.text});
+			}
+			
         }
     }
     res.sendStatus(200);
