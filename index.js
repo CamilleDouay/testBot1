@@ -25,7 +25,7 @@ app.listen((process.env.PORT || 3000));
 const sessions = {};
 
 const findOrCreateSession = (fbid) => {
-  //let sessionId;
+  var sessionId;
   // Let's see if we already have a session for the user fbid
   Object.keys(sessions).forEach(k => {
     if (sessions[k].fbid === fbid) {
