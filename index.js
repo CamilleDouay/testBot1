@@ -7,11 +7,43 @@ var app = express();
 // Get config 
 
 const Config = require('./config.js');
+const FB = require('./facebook.js');
+
+const wit = require('./bot.js').getWit();
 
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen((process.env.PORT || 3000));
+
+
+// This will contain all user sessions.
+// Each session has an entry:
+// sessionId -> {fbid: facebookUserId, context: sessionState}
+const sessions = {};
+
+const findOrCreateSession = (fbid) => {
+  let sessionId;
+  // Let's see if we already have a session for the user fbid
+  Object.keys(sessions).forEach(k => {
+    if (sessions[k].fbid === fbid) {
+      // Yep, got it!
+      sessionId = k;
+    }
+  });
+  if (!sessionId) {
+    // No session found for user fbid, let's create a new one
+    sessionId = new Date().toISOString();
+    sessions[sessionId] = {
+      fbid: fbid,
+      context: {
+        _fbid_: fbid
+      }
+    }; // set context, _fid_
+  }
+  return sessionId;
+};
+
 
 // Server frontpage
 app.get('/', function (req, res) {
@@ -30,21 +62,67 @@ app.get('/webhook', function (req, res) {
 	}
 });
 
-// handler receiving messages
-app.post('/webhook', function (req, res) {
-    var events = req.body.entry[0].messaging;
-    for (i = 0; i < events.length; i++) {
-        var event = events[i];
-		if (event.message && event.message.text) {
-			if (!kittenMessage(event.sender.id, event.message.text)) {
-				sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
-			}
-		} else if (event.postback) {
-			console.log("Postback received: " + JSON.stringify(event.postback));
-		}
+// The main message handler
+app.post('/webhook', (req, res) => {
+  // Parsing the Messenger API response
+  const messaging = FB.getFirstMessagingEntry(req.body);
+  if (messaging && messaging.message) {
+
+    // Yay! We got a new message!
+
+    // We retrieve the Facebook user ID of the sender
+    const sender = messaging.sender.id;
+
+    // We retrieve the user's current session, or create one if it doesn't exist
+    // This is needed for our bot to figure out the conversation history
+    const sessionId = findOrCreateSession(sender);
+
+    // We retrieve the message content
+    const msg = messaging.message.text;
+    const atts = messaging.message.attachments;
+
+    if (atts) {
+      // We received an attachment
+
+      // Let's reply with an automatic message
+      FB.fbMessage(
+        sender,
+        'Sorry I can only process text messages for now.'
+      );
+    } else if (msg) {
+      // We received a text message
+
+      // Let's forward the message to the Wit.ai Bot Engine
+      // This will run all actions until our bot has nothing left to do
+      wit.runActions(
+        sessionId, // the user's current session
+        msg, // the user's message 
+        sessions[sessionId].context, // the user's current session state
+        (error, context) => {
+          if (error) {
+            console.log('Oops! Got an error from Wit:', error);
+          } else {
+            // Our bot did everything it has to do.
+            // Now it's waiting for further messages to proceed.
+            console.log('Waiting for futher messages.');
+
+            // Based on the session state, you might want to reset the session.
+            // This depends heavily on the business logic of your bot.
+            // Example:
+            // if (context['done']) {
+            //   delete sessions[sessionId];
+            // }
+
+            // Updating the user's current session state
+            sessions[sessionId].context = context;
+          }
+        }
+      );
     }
-    res.sendStatus(200);
+  }
+  res.sendStatus(200);
 });
+
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
