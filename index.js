@@ -9,7 +9,7 @@ var app = express();
 const Config = require('./config.js');
 const FB = require('./facebook.js');
 
-const wit = require('./bot.js').getWit();
+//const wit = require('./bot.js').getWit();
 
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -63,7 +63,7 @@ app.get('/webhook', function (req, res) {
 });
 
 // The main message handler
-app.post('/webhook', (req, res) => {
+app.post('/webhook', function(req, res){
   // Parsing the Messenger API response
   const messaging = FB.getFirstMessagingEntry(req.body);
   if (messaging && messaging.message) {
@@ -94,30 +94,10 @@ app.post('/webhook', (req, res) => {
 
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
-      wit.runActions(
-        sessionId, // the user's current session
-        msg, // the user's message 
-        sessions[sessionId].context, // the user's current session state
-        (error, context) => {
-          if (error) {
-            console.log('Oops! Got an error from Wit:', error);
-          } else {
-            // Our bot did everything it has to do.
-            // Now it's waiting for further messages to proceed.
-            console.log('Waiting for futher messages.');
-
-            // Based on the session state, you might want to reset the session.
-            // This depends heavily on the business logic of your bot.
-            // Example:
-            // if (context['done']) {
-            //   delete sessions[sessionId];
-            // }
-
-            // Updating the user's current session state
-            sessions[sessionId].context = context;
-          }
-        }
-      );
+      FB.fbmessage(
+	  sender, 
+	  'Je n\'ai pas d\'autres réponses pour le moment'
+	  );
     }
   }
   res.sendStatus(200);

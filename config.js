@@ -2,7 +2,7 @@
 
 // Wit.ai parameters
 
-const WIT_TOKEN = process.env.WIT_TOKEN || 'fake_wit_token';
+const WIT_TOKEN = process.env.WIT_TOKEN || '5NHOWL34ZPSCN6LVN3BCSVT5T3SMTE35';
 if(!WIT_TOKEN) {
 	throw new Error('missing WIT_TOKEN');
 }
