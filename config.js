@@ -4,7 +4,7 @@
 
 const WIT_TOKEN = process.env.WIT_TOKEN;
 if(!WIT_TOKEN) {
-	throw new Error('missing WIT_TOKEN')
+	throw new Error('missing WIT_TOKEN');
 }
 
 // Messenger API parameters
@@ -17,5 +17,5 @@ module.exports = {
 	WIT_TOKEN: WIT_TOKEN;
 	FB_PAGE_TOKEN: FB_PAGE_TOKEN;
 	FB_VERIFY_TOKEN: FB_VERIFY_TOKEN;
-}
+};
 
