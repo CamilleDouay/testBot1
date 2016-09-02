@@ -8,11 +8,14 @@ var app = express();
 
 const Config = require('./config.js');
 const FB = require('./facebook.js');
+const bot = require('./bot.js');
 
 //const wit = require('./bot.js').getWit();
 
-console.log(Config.FB_VERIFY_TOKEN)
-console.log(Config.WIT_TOKEN)
+
+// Setting up our bot
+const wit = bot.getWit();
+
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
