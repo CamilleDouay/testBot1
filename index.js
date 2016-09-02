@@ -96,7 +96,7 @@ app.post('/webhook', function(req, res){
 
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
-      FB.fbmessage(
+      FB.fbMessage(
 	  sender, 
 	  'Je n\'ai pas d\'autres réponses pour le moment'
 	  );
